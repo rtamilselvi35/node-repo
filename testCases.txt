@@ -1,0 +1,29 @@
+School Admin Project
+
+1) Endpoint: POST /api/register
+
+Description:  Inserting student information for the particular teacher
+Input: 
+        {        
+        "teacher": "teacherken123@gmail.com",
+        "students": [        
+                    "studentjon21643@example.com",        
+                    "studenthon5416343@example.com"        
+                    ]        
+       }
+Expected Output:
+{
+    "status": "success",
+    "message": "data inserted successfully"
+}
+
+If input is empty the below error message will display
+Test cases: Atleast one student must be in the list and also the teacher name 
+
+{        
+ "teacher": "teacherken123@gmail.com",
+"students": [        
+"studentjon21643@example.com",        
+"studenthon5416343@example.com"        
+]        
+}
