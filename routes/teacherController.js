@@ -20,7 +20,7 @@ router.post('/register',function(req,res,next){
         if(err){
             return next(err);
         }else{
-            res.status(200).json({"status":"data inserted successfully"});
+            res.status(200).json({"status":"success","message":"data inserted successfully"});
         }
         });
         
