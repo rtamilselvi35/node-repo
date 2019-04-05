@@ -63,7 +63,7 @@ router.get('/commonstudents',function(req,res,next){
             }else if(result.length > 0){
                 res.status(200).json({"status":"success","students":result[0].commonToBoth});
             }else{
-                res.status(204).json({"status":"failure","message":"No matching students record found"});
+                res.status(204).json({"status":"success","message":"No matching students record found"});
             }
         });
 
@@ -85,7 +85,7 @@ router.post('/suspend',function(req,res,next){
             if(result.result.nModified > 0){
                 res.status(200).json({"status":"success","message":"Student Suspended!!!"});
             }else{
-                res.status(200).json({"status":"success","message":"No matching document found for "+student_suspend});
+                res.status(204).json({"status":"failure","message":"No matching document found for "+student_suspend});
             }
         });
 
@@ -100,8 +100,9 @@ router.post('/retrievefornotifications',function(req,res,next){
     let notificationQuery = 
             [   {
                     $match: {
-                    $or: [ { teacher: req.body.teacher } , { "students.notification" :"enable" }  ] 
-                    }
+                   
+                       $or: [ { teacher: req.body.teacher } , { "students.notification" :"enable" }  ] 
+                    }                    
                 },
                 {
                     $unwind: {
@@ -111,7 +112,7 @@ router.post('/retrievefornotifications',function(req,res,next){
                 },
                 {
                     $match: {
-                    $or: [ { teacher: req.body.teacher } , { "students.notification" :"enable" }  ] 
+                        $and :[{$or: [ { teacher: req.body.teacher } , { "students.notification" :"enable" }  ] },{"students.status" : { $ne:"suspended"}}] 
                     }
                 },        
                 {
@@ -129,13 +130,14 @@ router.post('/retrievefornotifications',function(req,res,next){
             ];     
 
         req.dbTest.Teacher.aggregate(notificationQuery).toArray(function(err,result){
+            console.log("err,result",err,result);
             if(err){
                 return next(err);
             }
             if(result[0].students_list.length > 0){
                 res.status(200).json({"status":"success","recipients":result[0].students_list});
             }else{
-                res.status(204).json({"status":"failure","message":"No matching students record found"});
+                res.status(204).json({"status":"success","message":"No matching students record found"});
             }
         });
        

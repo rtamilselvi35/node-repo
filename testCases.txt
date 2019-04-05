@@ -2,28 +2,177 @@ School Admin Project
 
 1) Endpoint: POST /api/register
 
-Description:  Inserting student information for the particular teacher
-Input: 
+        Description:  Inserting student information for the particular teacher
+
+        Input: 
+            {        
+                "teacher": "teacher1@gmail.com",
+                "students": [        
+                            "student1@example.com",        
+                            "student2@example.com"        
+                            ]        
+            }
+
+        Expected Output:
+        {
+            "status": "success",
+            "message": "Student information inserted successfully"
+        }
+
+        If input is empty  the user will receive the error message described below.
+
+        Test cases: Atleast one student must be in the list and also the teacher name 
+
+        Input:
         {        
-        "teacher": "teacherken123@gmail.com",
-        "students": [        
-                    "studentjon21643@example.com",        
-                    "studenthon5416343@example.com"        
-                    ]        
-       }
-Expected Output:
-{
-    "status": "success",
-    "message": "data inserted successfully"
-}
+                "teacher": "teacher1@gmail.com",
+                "students": [        
+                            "student1@example.com"       
+                            ]        
+        }
 
-If input is empty the below error message will display
-Test cases: Atleast one student must be in the list and also the teacher name 
+        Output:
 
-{        
- "teacher": "teacherken123@gmail.com",
-"students": [        
-"studentjon21643@example.com",        
-"studenthon5416343@example.com"        
-]        
-}
+        {       "status":"failure",
+                "message":"Need Appropriate documents to store in DB"
+        }
+
+2) Endpoint: GET /api/commonstudents
+
+        Description: Find common students between teachers
+
+        Input:  http://localhost:8080/api/commonstudents?teacher=teacher1@gmail.com&teacher=teacher2@gmail.com
+
+        Expected Output:
+        {
+            "status": "success",
+            "students": [
+                        "student1@example.com",
+                        "student2@example.com"
+                        ]
+        }
+
+       Test cases:
+       
+       1)  In query parameter atleast one teacher name we should give in query parameter.
+
+            like this ->  api/commonstudents?teacher=teacher1@gmail.com&teacher=teacher2@gmail.com  
+
+            If not  the user will receive the error message described below.
+
+            Output:
+                {
+                "status":"failure",
+                "message":"Need Appropriate documents to get data from DB"
+                }
+
+      2) If there is no common students between the teachers.
+
+             The user will receive the error message described below.
+
+            {
+                "status":"success",
+                "message":"No matching students record found"
+            }
+3) Endpoint: POST /api/suspend
+
+    Description:  Updating Student status to suspend. Student status will change to suspended. 
+    If the same student exists in the list of many teachers, all the status will be changed.
+
+    Input: 
+            {
+                "student":"student1@example.com"  
+            }
+
+    Expected Output:
+        {
+            "status":"success",
+            "message":"Student Suspended!!!"
+        }
+    Test cases:
+
+        1) The input must contain atleast one student information.
+
+            Input:
+
+            {
+                "student":"student1@example.com"  
+            }
+
+            Output:
+
+            {
+                "status":"success",
+                "message":"Student Suspended!!!"
+            }
+
+        2) If there is  no proper data
+          
+            The user will receive the error message described below.
+
+           Output:
+
+            {
+                "status":"failure",
+                "message":"Need students details to suspend"
+            }
+
+        3) The given student information is not present in DB
+             
+            The user will receive the error message described below.
+
+            Output:
+
+            {
+                "status":"success",
+                "message":"No matching document found for search student"
+            }
+
+4) Endpoint: POST /api/retrievefornotifications
+
+    Description: Listing the students eligible for receiving notification.
+
+    The students who are all reistered under a particular teacher,and also who are all having Notification enabled option are only eligible to receive the notification.
+    
+    Input: 
+        {
+                "teacher": "teacher1@gmail.com",
+                "notification": "Hello students!"
+        }
+    
+    Expected Output:
+    {
+            "status": "success",
+            "recipients": [
+                            "student3@example.com",
+                            "student2@example.com",
+                            "student4@example.com",
+                            "student1@example.com"
+                        ]
+    }
+
+    Test cases:
+
+    1) The suspended students wont get notification eventhough they are having notification : enable option also.
+
+    2) There is no students available for the particular teacher (If all students status as suspended means)
+
+      The user will receive the error message described below.
+
+      Output:
+
+      {
+          "status":"success",
+          "message":"No matching students record found"
+      }
+
+    3) Teacher name is mandatory while giving the input, else the user will receive the error message described below.
+
+        Output:
+
+        {
+            "status":"failure",
+            "message":"Need content to send notification"
+        }
+
+
